@@ -11,9 +11,11 @@ services:
       POSTGRES_DB: agronomy
   
   server:
-    build: ../
+    build: .
     links:
       - db
     command: ./build/server --port=80 --dbhost=host.docker.internal --dbport=5432 --dbuser=postgres --dbpassword=example --dbname=agronomy
     ports:
       - 3490:80
+    depends_on:
+      - db

@@ -31,8 +31,12 @@ void hothouses_handler::handleRequest(
     {
         std::deque<hothouse::hothouse_t> hothouses;
         session_ << "SELECT * FROM hothouses", Poco::Data::Keywords::into(hothouses), Poco::Data::Keywords::now;
+
+        std::string body = nlohmann::to_string(nlohmann::json(std::move(hothouses)));
         response.setStatusAndReason(Poco::Net::HTTPResponse::HTTP_OK);
-        response.send() << nlohmann::json(std::move(hothouses));
+        response.setContentType("application/json");
+        response.setContentLength(body.size());
+        response.send() << body;
     }
     catch (const Poco::Exception& error)
     {
